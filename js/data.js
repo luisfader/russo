@@ -58,7 +58,7 @@ window.UNITS = [
   }
 },
 {
-  n: 2, img: 'img/units/u2.webp', ru: 'Что у нас есть? Числа и предметы',
+  n: 2, img: 'img/units/u2.webp', fy: '12%', ru: 'Что у нас есть? Числа и предметы',
   t: { es: '¿Qué tenemos? Números y objetos', en: 'What do we have? Numbers and objects', pt: 'O que temos? Números e objetos' },
   topics: 'У меня есть… / у меня нет… · Родительный падеж · У кого? · Числа',
   vocab: [
@@ -422,7 +422,7 @@ window.UNITS = [
   }
 },
 {
-  n: 9, img: 'img/units/u9.webp', ru: 'Будущее время: планы и результат',
+  n: 9, img: 'img/units/u9.webp', fy: '38%', ru: 'Будущее время: планы и результат',
   t: { es: 'El futuro: planes y resultado', en: 'Future tense: plans and result', pt: 'O futuro: planos e resultado' },
   topics: 'Будущее время · Буду + инфинитив · Процесс и результат · Планы',
   vocab: [
@@ -474,7 +474,7 @@ window.UNITS = [
   }
 },
 {
-  n: 10, img: 'img/units/u10.webp', ru: 'Творительный падеж: с кем? кем? чем?',
+  n: 10, img: 'img/units/u10.webp', fy: '15%', ru: 'Творительный падеж: с кем? кем? чем?',
   t: { es: 'Instrumental: ¿con quién? ¿como qué?', en: 'Instrumental: with whom? as what?', pt: 'Instrumental: com quem? como quê?' },
   topics: 'Творительный падеж · С кем? С чем? · Кем вы работаете? · Чем ты занимаешься?',
   vocab: [

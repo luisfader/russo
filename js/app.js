@@ -184,7 +184,7 @@ function renderHome() {
       <div class="progress-line"><span class="bar"><i style="width:${sc / total * 100}%"></i></span>${sc}/${total} ${t.progress}</div>
       <button class="btn gold next" data-go="${nx ? nx.join('-') : '1-1'}">${sc === 0 ? t.startJourney : nx ? t.cont + ' · ' + t.lessons[nx[1] - 1] : t.allDone} →</button>
     </div>
-    <div class="img" style="background-image:url(${heroUnit.img})" role="img" aria-label="Урок ${heroUnit.n}"></div>
+    <div class="img" style="background-image:url(${heroUnit.img});--fy:${heroUnit.fy || '0%'}" role="img" aria-label="Урок ${heroUnit.n}"></div>
   </section>
   <div class="section-head"><h2>${t.route}</h2><p>${t.routeSub}</p></div>
   <div class="route">`;
@@ -192,7 +192,7 @@ function renderHome() {
     const open = unitOpen(u.n), done = unitDone(u.n);
     h += `<article class="station ${done ? 'done' : ''} ${open ? '' : 'locked'}" id="u${u.n}">
       <span class="dot">${done ? '✓' : u.n}</span>
-      <div class="pic" style="background-image:url(${u.img})" role="img" aria-label="Урок ${u.n}"></div>
+      <div class="pic" style="background-image:url(${u.img});--fy:${u.fy || '0%'}" role="img" aria-label="Урок ${u.n}"></div>
       <div class="body">
         <p class="eyebrow">Урок ${u.n}</p>
         <h3 class="ru">${esc(u.ru)}</h3>
@@ -461,7 +461,7 @@ function finishLesson() {
   const acc = Math.round(LS.right / Math.max(1, LS.right + LS.wrong) * 100);
   const nx = nextLesson();
   $('.stage', box).innerHTML = `<div class="end">
-    <div class="postcard" style="background-image:url(${u.img})"><div class="stamp">${t.stamp}<br>Урок ${u.n}<br>${'★'.repeat(LS.l)}</div></div>
+    <div class="postcard" style="background-image:url(${u.img});--fy:${u.fy || '0%'}"><div class="stamp">${t.stamp}<br>Урок ${u.n}<br>${'★'.repeat(LS.l)}</div></div>
     <h2>${t.endTitle}</h2><p style="margin:0;color:var(--muted)">${t.endText}</p>
     <div class="nums"><div><b>${acc}%</b><small>${t.correct}</small></div><div><b>+${LS.right + bonus}</b><small>${t.kmWon}</small></div></div>
   </div>`;
