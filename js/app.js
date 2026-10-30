@@ -29,7 +29,9 @@ const I18N = {
     stamp: 'ПРОЙДЕНО', streak: 'días seguidos', km: 'km recorridos', stamps: 'billetes sellados',
     g: { 'м.': ['masculino', 'м.'], 'ж.': ['femenino', 'ж.'], 'ср.': ['neutro', 'ср.'], 'мн.': ['solo plural', 'мн.'] },
     cases: ['Nominativo', 'Genitivo', 'Dativo', 'Acusativo', 'Instrumental', 'Preposicional'],
-    caseQ: 'Forma de «{w}» en {c}', with: 'con'
+    caseQ: 'Forma de «{w}» en {c}', with: 'con',
+    ticket: 'Billete', board: 'Al tren', plates: 'Láminas del manual', zoom: 'Ampliar',
+    shelf: 'La estantería', shelfSub: 'Las novelas de Роберт Фадер de donde salen los personajes.', shelfNote: 'Todas estas novelas se pueden leer en ruso en «Литературный мир».'
   },
   en: {
     tag: 'Russian with Роберт Фадер’s characters',
@@ -57,7 +59,9 @@ const I18N = {
     stamp: 'ПРОЙДЕНО', streak: 'day streak', km: 'km travelled', stamps: 'tickets stamped',
     g: { 'м.': ['masculine', 'м.'], 'ж.': ['feminine', 'ж.'], 'ср.': ['neuter', 'ср.'], 'мн.': ['plural only', 'мн.'] },
     cases: ['Nominative', 'Genitive', 'Dative', 'Accusative', 'Instrumental', 'Prepositional'],
-    caseQ: '«{w}» in the {c}', with: 'with'
+    caseQ: '«{w}» in the {c}', with: 'with',
+    ticket: 'Ticket', board: 'All aboard', plates: 'Plates from the textbook', zoom: 'Enlarge',
+    shelf: 'The bookshelf', shelfSub: 'Роберт Фадер’s novels, where the characters come from.', shelfNote: 'All these novels can be read in Russian on «Литературный мир».'
   },
   pt: {
     tag: 'Russo com as personagens de Роберт Фадер',
@@ -85,7 +89,9 @@ const I18N = {
     stamp: 'ПРОЙДЕНО', streak: 'dias seguidos', km: 'km percorridos', stamps: 'bilhetes carimbados',
     g: { 'м.': ['masculino', 'м.'], 'ж.': ['feminino', 'ж.'], 'ср.': ['neutro', 'ср.'], 'мн.': ['só plural', 'мн.'] },
     cases: ['Nominativo', 'Genitivo', 'Dativo', 'Acusativo', 'Instrumental', 'Preposicional'],
-    caseQ: '«{w}» no {c}', with: 'com'
+    caseQ: '«{w}» no {c}', with: 'com',
+    ticket: 'Bilhete', board: 'Embarcar', plates: 'Ilustrações do manual', zoom: 'Ampliar',
+    shelf: 'A estante', shelfSub: 'Os romances de Роберт Фадер de onde vêm as personagens.', shelfNote: 'Todos estes romances podem ler-se em russo em «Литературный мир».'
   }
 };
 const CASE_RU = ['И.п. · кто? что?', 'Р.п. · кого? чего?', 'Д.п. · кому? чему?', 'В.п. · кого? что?', 'Т.п. · кем? чем?', 'П.п. · о ком? о чём?'];
@@ -127,6 +133,7 @@ const LOCO = '<svg class="loco" viewBox="0 0 34 30" aria-hidden="true"><path d="
 
 /* ======================= progreso ======================= */
 const lkey = (u, l) => `u${u}l${l}`;
+const sceneList = u => Array.from({ length: u.scenes || 0 }, (_, i) => `img/scenes/u${u.n}-${i + 1}.webp`);
 const unitDone = n => [1, 2, 3, 4].every(l => S.done[lkey(n, l)]);
 const unitOpen = n => S.unlockAll || n === 1 || unitDone(n - 1);
 const lessonOpen = (n, l) => unitOpen(n) && (S.unlockAll || l === 1 || S.done[lkey(n, l - 1)]);
@@ -204,6 +211,7 @@ function renderHome() {
           return `<button class="ticket ${d ? 'done' : ''} ${isNext ? 'open' : ''}" data-go="${u.n}-${l}" ${o ? '' : `disabled title="${esc(t.locked)}"`}>
             <b>${t.lessons[l - 1]}</b><small>${t.lessonSub[l - 1]}</small></button>`;
         }).join('')}</div>
+        <div class="thumbs">${sceneList(u).map((src, i) => `<button data-zoom="${src}" aria-label="${t.zoom} ${i + 1}"><img src="${src}" alt="" loading="lazy"></button>`).join('')}</div>
         <div class="links"><button class="link" data-guide="${u.n}">${t.guide}</button></div>
       </div>
     </article>`;
@@ -220,6 +228,12 @@ function renderHome() {
       </article>`).join('')}
     </div>
   </section>
+  <section class="shelf">
+    <div class="section-head"><h2>${t.shelf}</h2><p>${t.shelfSub}</p></div>
+    <div class="books">${BOOKS.map(b => `<figure><button data-zoom="img/books/${b[0]}.webp" aria-label="${esc(b[1])}"><img src="img/books/${b[0]}.webp" alt="${esc(b[1])}" loading="lazy" width="255" height="382"></button><figcaption class="ru">${esc(b[1])}</figcaption></figure>`).join('')}</div>
+    <p class="shelf-note">${t.shelfNote}</p>
+  </section>
+  <img class="skyline" src="img/skyline.webp" alt="" loading="lazy" width="760" height="156">
   <footer class="about">
     <div>${t.about}<br><span class="ru" style="font-style:italic">«Я очень люблю преподавать и учиться».</span></div>
     <div class="settings">
@@ -241,6 +255,7 @@ function openGuide(n) {
       <button class="x" data-close aria-label="×">×</button></header>
     <div class="inner">
       <section><h3>${t.tips}</h3><ul class="tips">${u.tips[L].map(x => `<li>${esc(x)}</li>`).join('')}</ul></section>
+      ${u.scenes ? `<section><h3>${t.plates}</h3><div class="plates">${sceneList(u).map(src => `<button data-zoom="${src}"><img src="${src}" alt="" loading="lazy"></button>`).join('')}</div></section>` : ''}
       <section><h3>${t.phrases}</h3><div class="phr">${u.phrases.map(p => `<div><span class="ru">${esc(p[0])}</span><button class="say" data-say="${esc(p[0])}" aria-label="▶">${ICON_SOUND}</button><small>${esc(p[PH_IX[L]])}</small></div>`).join('')}</div></section>
       <section><h3>${t.vocab}</h3><div class="table-wrap"><table><thead><tr><th>${t.word}</th><th>${t.meaning}</th></tr></thead><tbody>
         ${u.vocab.map(v => `<tr><td class="ru">${esc(v[0])} <small>${v[1]}</small><button class="say" data-say="${esc(v[0])}" aria-label="▶">${ICON_SOUND}</button></td><td>${esc(v[LANG_IX[L]])}</td></tr>`).join('')}
@@ -252,6 +267,10 @@ function openGuide(n) {
   modal.hidden = false; document.body.style.overflow = 'hidden';
   $('.x', modal).focus();
 }
+const zoomBox = document.createElement('div'); zoomBox.className = 'zoom'; zoomBox.hidden = true; document.body.appendChild(zoomBox);
+function openZoom(src) { zoomBox.innerHTML = `<img src="${src}" alt=""><button class="x" aria-label="×">×</button>`; zoomBox.hidden = false; }
+function closeZoom() { zoomBox.hidden = true; zoomBox.innerHTML = ''; }
+zoomBox.addEventListener('click', closeZoom);
 function closeGuide() { modal.hidden = true; modal.innerHTML = ''; document.body.style.overflow = ''; }
 
 /* ======================= generación de ejercicios ======================= */
@@ -322,6 +341,7 @@ let LS = null; // estado de la lección
 function startLesson(n, l) {
   if (!lessonOpen(n, l)) return;
   const items = buildLesson(n, l);
+  items.unshift({ k: 'intro' });
   LS = { n, l, items, i: 0, total: items.filter(x => x.k !== 'learn').length, right: 0, wrong: 0, retried: new Set(), answered: false, sel: null };
   box.hidden = false; document.body.style.overflow = 'hidden';
   box.innerHTML = `<div class="bar-top"><button class="close" data-act="quit" aria-label="×">×</button>
@@ -350,6 +370,14 @@ function showItem() {
   const optHtml = (opts, ru) => `<div class="opts">${opts.map((o, i) => `<button class="opt ${ru ? 'ru' : ''}" data-opt="${esc(o)}"><kbd>${i + 1}</kbd>${esc(o)}</button>`).join('')}</div>`;
   let h = '';
   switch (it.k) {
+    case 'intro': {
+      const u = UNITS[LS.n - 1], sc = sceneList(u);
+      const src = LS.l <= 3 && sc.length ? sc[(LS.l - 1) % sc.length] : u.img;
+      st.innerHTML = `<div class="q intro"><p class="kind">${t.ticket} ${LS.l} · Урок ${u.n}</p>
+        <h2>${t.lessons[LS.l - 1]}</h2><p class="ru intro-ru">${esc(u.ru)}</p>
+        <button class="intro-img" data-zoom="${src}" aria-label="${t.zoom}"><img src="${src}" alt=""></button></div>`;
+      foot('', '', t.board + ' →', true); return;
+    }
     case 'learn': {
       const g = t.g[it.w[1]];
       h = `<p class="kind">${t.k.learn}</p>
@@ -446,7 +474,7 @@ function check() {
 function primary() {
   const it = LS.items[LS.i];
   if (!it) return;
-  if (it.k === 'learn' || LS.answered) { LS.i++; return showItem(); }
+  if (it.k === 'learn' || it.k === 'intro' || LS.answered) { LS.i++; return showItem(); }
   check();
 }
 
@@ -481,6 +509,7 @@ document.addEventListener('click', e => {
   if (el.dataset.pick) { S.lang = el.dataset.pick; save(); window.scrollTo(0, 0); return render(); }
   if (el.dataset.act === 'home') { e.preventDefault(); if (LS) quitLesson(); closeGuide(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   if (el.dataset.say) { say(el.dataset.say); return; }
+  if (el.dataset.zoom) return openZoom(el.dataset.zoom);
   if (el.dataset.guide) return openGuide(+el.dataset.guide);
   if (el.hasAttribute('data-close')) return closeGuide();
   if (el.dataset.go && !LS) { const [n, l] = el.dataset.go.split('-').map(Number); return startLesson(n, l); }
@@ -530,6 +559,7 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('keydown', e => {
+  if (!zoomBox.hidden && e.key === 'Escape') return closeZoom();
   if (!modal.hidden && e.key === 'Escape') return closeGuide();
   if (!LS) return;
   if (e.key === 'Escape') return quitLesson();

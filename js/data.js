@@ -6,7 +6,7 @@
 
 window.UNITS = [
 {
-  n: 1, img: 'img/units/u1.webp', ru: 'Знакомство и простые вопросы',
+  n: 1, img: 'img/units/u1.webp', scenes: 3, ru: 'Знакомство и простые вопросы',
   t: { es: 'Presentaciones y preguntas simples', en: 'Introductions and simple questions', pt: 'Apresentações e perguntas simples' },
   topics: 'Знакомство и приветствия · «Как тебя зовут?» · Кто? Что? Кого? · «Ты» и «Вы»',
   vocab: [
@@ -58,7 +58,7 @@ window.UNITS = [
   }
 },
 {
-  n: 2, img: 'img/units/u2.webp', fy: '12%', ru: 'Что у нас есть? Числа и предметы',
+  n: 2, img: 'img/units/u2.webp', scenes: 3, fy: '12%', ru: 'Что у нас есть? Числа и предметы',
   t: { es: '¿Qué tenemos? Números y objetos', en: 'What do we have? Numbers and objects', pt: 'O que temos? Números e objetos' },
   topics: 'У меня есть… / у меня нет… · Родительный падеж · У кого? · Числа',
   vocab: [
@@ -110,7 +110,7 @@ window.UNITS = [
   }
 },
 {
-  n: 3, img: 'img/units/u3.webp', ru: 'Каждый день и движение',
+  n: 3, img: 'img/units/u3.webp', scenes: 3, ru: 'Каждый день и движение',
   t: { es: 'El día a día y el movimiento', en: 'Everyday life and movement', pt: 'O dia a dia e o movimento' },
   topics: 'Мой день · Идти и ехать · Куда? Откуда? · Просьбы и указания',
   vocab: [
@@ -162,7 +162,7 @@ window.UNITS = [
   }
 },
 {
-  n: 4, img: 'img/units/u4.webp', ru: 'Кому? Потребности и состояния',
+  n: 4, img: 'img/units/u4.webp', scenes: 3, ru: 'Кому? Потребности и состояния',
   t: { es: '¿A quién? Necesidades y estados', en: 'To whom? Needs and states', pt: 'A quem? Necessidades e estados' },
   topics: 'Дательный падеж · Мне нужно… · Мне холодно. Мне 20 лет. · Предлоги «к» и «по»',
   vocab: [
@@ -214,7 +214,7 @@ window.UNITS = [
   }
 },
 {
-  n: 5, img: 'img/units/u5.webp', ru: 'Покупки и винительный падеж',
+  n: 5, img: 'img/units/u5.webp', scenes: 3, ru: 'Покупки и винительный падеж',
   t: { es: 'Compras y acusativo', en: 'Shopping and the accusative', pt: 'Compras e acusativo' },
   topics: 'Покупки · Винительный падеж · Три склонения · Сколько стоит?',
   vocab: [
@@ -266,7 +266,7 @@ window.UNITS = [
   }
 },
 {
-  n: 6, img: 'img/units/u6.webp', ru: 'Город и дорога',
+  n: 6, img: 'img/units/u6.webp', scenes: 3, ru: 'Город и дорога',
   t: { es: 'La ciudad y el camino', en: 'The city and the way', pt: 'A cidade e o caminho' },
   topics: 'Где? Куда? · Как пройти? · Как добраться? · Вежливые просьбы',
   vocab: [
@@ -318,7 +318,7 @@ window.UNITS = [
   }
 },
 {
-  n: 7, img: 'img/units/u7.webp', ru: 'Прошедшее время и погода',
+  n: 7, img: 'img/units/u7.webp', scenes: 2, ru: 'Прошедшее время и погода',
   t: { es: 'El pasado y el tiempo', en: 'Past tense and weather', pt: 'O passado e o tempo' },
   topics: 'Прошедшее время · Вчера и сегодня · Погода · Времена года',
   vocab: [
@@ -370,7 +370,7 @@ window.UNITS = [
   }
 },
 {
-  n: 8, img: 'img/units/u8.webp', ru: 'Предложный падеж: место и тема',
+  n: 8, img: 'img/units/u8.webp', scenes: 3, ru: 'Предложный падеж: место и тема',
   t: { es: 'Preposicional: lugar y tema', en: 'Prepositional: place and topic', pt: 'Preposicional: lugar e tema' },
   topics: 'Предложный падеж · Где? «В» или «на»? · О ком? О чём? · Где ты был вчера?',
   vocab: [
@@ -422,7 +422,7 @@ window.UNITS = [
   }
 },
 {
-  n: 9, img: 'img/units/u9.webp', fy: '38%', ru: 'Будущее время: планы и результат',
+  n: 9, img: 'img/units/u9.webp', scenes: 3, fy: '38%', ru: 'Будущее время: планы и результат',
   t: { es: 'El futuro: planes y resultado', en: 'Future tense: plans and result', pt: 'O futuro: planos e resultado' },
   topics: 'Будущее время · Буду + инфинитив · Процесс и результат · Планы',
   vocab: [
@@ -474,7 +474,7 @@ window.UNITS = [
   }
 },
 {
-  n: 10, img: 'img/units/u10.webp', fy: '15%', ru: 'Творительный падеж: с кем? кем? чем?',
+  n: 10, img: 'img/units/u10.webp', scenes: 3, fy: '15%', ru: 'Творительный падеж: с кем? кем? чем?',
   t: { es: 'Instrumental: ¿con quién? ¿como qué?', en: 'Instrumental: with whom? as what?', pt: 'Instrumental: com quem? como quê?' },
   topics: 'Творительный падеж · С кем? С чем? · Кем вы работаете? · Чем ты занимаешься?',
   vocab: [
@@ -556,4 +556,10 @@ window.HEROES = [
     bio:{ es:'La heroína rubia de «Дикий час». En Belgrado forma parte de una conspiración secreta en la torre Nebojša.',
           en:'The fair-haired heroine of «Дикий час». In Belgrade she is part of a secret plot in the Nebojša tower.',
           pt:'A heroína loira de «Дикий час». Em Belgrado faz parte de uma conspiração secreta na torre Nebojša.' } }
+];
+
+window.BOOKS = [
+  ['rezonans-lyubvi','Резонанс любви'], ['anomalny','Аномальный час'], ['dikiy','Дикий час'], ['prizrachny','Призрачный поезд'],
+  ['opasnoe','Опасное свидание'], ['tayna','Тайна семьи Фадер'], ['predchuvstvie','Предчувствие'], ['predchuvstvie-2','Предчувствие II'],
+  ['severnaya','Северная любовь'], ['volny','Волны любви']
 ];
