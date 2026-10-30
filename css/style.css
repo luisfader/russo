@@ -280,3 +280,41 @@ tr:last-child td{border-bottom:0}
 .shelf-note{text-align:center;color:var(--muted);font-style:italic;font-family:var(--ru);margin:18px 0 0}
 .skyline{width:100%;max-width:980px;height:auto;margin:48px auto -8px;opacity:.85;mix-blend-mode:multiply}
 @media (max-width:720px){.books{grid-template-columns:repeat(2,minmax(0,1fr))}.thumbs button{width:72px}}
+
+/* ---------- más ilustraciones ---------- */
+.pic-btn{padding:0;border:1px solid var(--line);background:#fff;border-radius:10px;overflow:hidden;display:block;cursor:zoom-in;width:100%}
+.pic-btn img{width:100%;height:auto;display:block}
+.pic-btn.cut{background:#fff}
+.pic-btn:hover{border-color:var(--gold)}
+.thumbs{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.thumbs .pic-btn.th{flex:none;width:72px;height:72px;border-radius:8px}
+.thumbs .pic-btn.th img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.thumbs .pic-btn.th.figure img,.thumbs .pic-btn.th.cut img,.thumbs .pic-btn.th.chart img{object-fit:contain}
+.th-more{flex:none;height:72px;min-width:72px;border:1.5px dashed var(--gold);border-radius:8px;background:var(--paper-2);color:var(--gold-ink);font-family:var(--serif);font-weight:700;font-size:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.th-more small{font-family:var(--text);font-size:11px;font-weight:400}
+.station .links .link + .link{margin-left:0}
+.masonry{columns:3 200px;column-gap:12px}
+.masonry .pic-btn{break-inside:avoid;margin:0 0 12px}
+.sheet.wide{max-width:1100px}
+.sheet.wide .inner section h3{position:sticky;top:-18px;background:var(--paper);padding:8px 0;z-index:1}
+.divider{display:block;width:min(100%,640px);height:auto;margin:30px auto 18px;mix-blend-mode:multiply;opacity:.9}
+.divider.small{width:min(100%,460px)}
+.comics{margin-top:12px}
+.comic-row{display:flex;gap:16px;overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x mandatory}
+.comic-row figure{margin:0;flex:none;width:200px;scroll-snap-align:start;text-align:center}
+.comic-row .pic-btn{box-shadow:0 14px 26px -16px rgba(20,36,74,.6);transform:rotate(-1deg);transition:transform .2s}
+.comic-row figure:nth-child(even) .pic-btn{transform:rotate(1deg)}
+.comic-row .pic-btn:hover{transform:rotate(0) translateY(-4px)}
+.comic-row figcaption{font-family:var(--serif);color:var(--navy);margin-top:8px;font-weight:700}
+.about .author{width:110px;height:auto;border-radius:999px 999px 10px 10px;flex:none;filter:grayscale(1)}
+.about .eyebrow{margin:0 0 4px}
+.learn-pic{display:flex;justify-content:center;margin:-6px 0 -4px}
+.learn-pic img{max-height:min(30vh,260px);width:auto;max-width:100%;border-radius:12px}
+.learn-pic.figure img{mix-blend-mode:multiply;border-radius:0}
+.learn-pic.scene img{box-shadow:0 14px 30px -18px rgba(20,36,74,.6);border:5px solid #fff}
+.intro-note{margin:-6px 0 0;color:var(--wine);font-weight:700}
+.intro-img.comic img{max-height:62vh}
+.intro-img.chart{border-width:4px}
+.mate{position:fixed;left:max(8px,calc(50% - 640px));bottom:84px;height:min(58vh,520px);width:auto;mix-blend-mode:multiply;pointer-events:none;opacity:.95;z-index:0}
+.lesson .stage{position:relative;z-index:1}
+@media (max-width:1180px){.mate{display:none}}

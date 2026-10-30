@@ -30,7 +30,7 @@ const I18N = {
     g: { 'м.': ['masculino', 'м.'], 'ж.': ['femenino', 'ж.'], 'ср.': ['neutro', 'ср.'], 'мн.': ['solo plural', 'мн.'] },
     cases: ['Nominativo', 'Genitivo', 'Dativo', 'Acusativo', 'Instrumental', 'Preposicional'],
     caseQ: 'Forma de «{w}» en {c}', with: 'con',
-    ticket: 'Billete', board: 'Al tren', plates: 'Láminas del manual', zoom: 'Ampliar',
+    ticket: 'Billete', board: 'Al tren', plates: 'Láminas del manual', album: 'Álbum', albumOf: 'Álbum de la lección', comics: 'Los cómics del manual', comicsSub: 'Historias ilustradas con los personajes. Toca una página para leerla.', charts: 'Tablas del manual', readComic: 'Antes de empezar, lee el cómic de la lección', appendix: 'Apéndice', more: 'más', authorCap: 'El autor', zoom: 'Ampliar',
     shelf: 'La estantería', shelfSub: 'Las novelas de Роберт Фадер de donde salen los personajes.', shelfNote: 'Todas estas novelas se pueden leer en ruso en «Литературный мир».'
   },
   en: {
@@ -60,7 +60,7 @@ const I18N = {
     g: { 'м.': ['masculine', 'м.'], 'ж.': ['feminine', 'ж.'], 'ср.': ['neuter', 'ср.'], 'мн.': ['plural only', 'мн.'] },
     cases: ['Nominative', 'Genitive', 'Dative', 'Accusative', 'Instrumental', 'Prepositional'],
     caseQ: '«{w}» in the {c}', with: 'with',
-    ticket: 'Ticket', board: 'All aboard', plates: 'Plates from the textbook', zoom: 'Enlarge',
+    ticket: 'Ticket', board: 'All aboard', plates: 'Plates from the textbook', album: 'Album', albumOf: 'Lesson album', comics: 'Comics from the textbook', comicsSub: 'Illustrated stories with the characters. Tap a page to read it.', charts: 'Tables from the textbook', readComic: 'Before you start, read the lesson’s comic', appendix: 'Appendix', more: 'more', authorCap: 'The author', zoom: 'Enlarge',
     shelf: 'The bookshelf', shelfSub: 'Роберт Фадер’s novels, where the characters come from.', shelfNote: 'All these novels can be read in Russian on «Литературный мир».'
   },
   pt: {
@@ -90,7 +90,7 @@ const I18N = {
     g: { 'м.': ['masculino', 'м.'], 'ж.': ['feminino', 'ж.'], 'ср.': ['neutro', 'ср.'], 'мн.': ['só plural', 'мн.'] },
     cases: ['Nominativo', 'Genitivo', 'Dativo', 'Acusativo', 'Instrumental', 'Preposicional'],
     caseQ: '«{w}» no {c}', with: 'com',
-    ticket: 'Bilhete', board: 'Embarcar', plates: 'Ilustrações do manual', zoom: 'Ampliar',
+    ticket: 'Bilhete', board: 'Embarcar', plates: 'Ilustrações do manual', album: 'Álbum', albumOf: 'Álbum da lição', comics: 'As bandas desenhadas do manual', comicsSub: 'Histórias ilustradas com as personagens. Toca numa página para a leres.', charts: 'Tabelas do manual', readComic: 'Antes de começar, lê a banda desenhada da lição', appendix: 'Apêndice', more: 'mais', authorCap: 'O autor', zoom: 'Ampliar',
     shelf: 'A estante', shelfSub: 'Os romances de Роберт Фадер de onde vêm as personagens.', shelfNote: 'Todos estes romances podem ler-se em russo em «Литературный мир».'
   }
 };
@@ -134,6 +134,14 @@ const LOCO = '<svg class="loco" viewBox="0 0 34 30" aria-hidden="true"><path d="
 /* ======================= progreso ======================= */
 const lkey = (u, l) => `u${u}l${l}`;
 const sceneList = u => Array.from({ length: u.scenes || 0 }, (_, i) => `img/scenes/u${u.n}-${i + 1}.webp`);
+const G = window.GALLERY || {};
+const gal = n => (G[n] || []).map(x => ({ src: 'img/album/' + x[0], w: x[1], h: x[2], kind: x[3] }));
+// todas las imágenes de una lección: apertura, láminas y álbum
+const allPics = u => [{ src: u.img, w: 637, h: 900, kind: 'scene' }, ...sceneList(u).map(src => ({ src, w: 760, h: 520, kind: 'scene' })), ...gal(u.n)];
+const ofKind = (u, ...k) => allPics(u).filter(p => k.includes(p.kind));
+const figsAll = () => UNITS.flatMap(x => gal(x.n).filter(p => p.kind === 'figure'));
+const pickOne = a => a[Math.random() * a.length | 0];
+const picBtn = (p, cls = '') => `<button class="pic-btn ${p.kind} ${cls}" data-zoom="${p.src}" aria-label="${T().zoom}"><img src="${p.src}" alt="" loading="lazy" width="${p.w}" height="${p.h}"></button>`;
 const unitDone = n => [1, 2, 3, 4].every(l => S.done[lkey(n, l)]);
 const unitOpen = n => S.unlockAll || n === 1 || unitDone(n - 1);
 const lessonOpen = (n, l) => unitOpen(n) && (S.unlockAll || l === 1 || S.done[lkey(n, l - 1)]);
@@ -193,6 +201,7 @@ function renderHome() {
     </div>
     <div class="img" style="background-image:url(${heroUnit.img});--fy:${heroUnit.fy || '0%'}" role="img" aria-label="Урок ${heroUnit.n}"></div>
   </section>
+  <img class="divider" src="img/decor/city-line.webp" alt="" width="700" height="162">
   <div class="section-head"><h2>${t.route}</h2><p>${t.routeSub}</p></div>
   <div class="route">`;
   for (const u of UNITS) {
@@ -211,12 +220,20 @@ function renderHome() {
           return `<button class="ticket ${d ? 'done' : ''} ${isNext ? 'open' : ''}" data-go="${u.n}-${l}" ${o ? '' : `disabled title="${esc(t.locked)}"`}>
             <b>${t.lessons[l - 1]}</b><small>${t.lessonSub[l - 1]}</small></button>`;
         }).join('')}</div>
-        <div class="thumbs">${sceneList(u).map((src, i) => `<button data-zoom="${src}" aria-label="${t.zoom} ${i + 1}"><img src="${src}" alt="" loading="lazy"></button>`).join('')}</div>
-        <div class="links"><button class="link" data-guide="${u.n}">${t.guide}</button></div>
+        <div class="thumbs">${(() => { const ps = allPics(u).slice(1); const rank = { scene: 0, comic: 1, figure: 2, chart: 3, cut: 4 }; const show = ps.slice().sort((x, y) => rank[x.kind] - rank[y.kind]).slice(0, 7);
+          return show.map(p => picBtn(p, 'th')).join('') + (ps.length > show.length ? `<button class="th-more" data-album="${u.n}">+${ps.length - show.length}<small>${t.more}</small></button>` : ''); })()}</div>
+        <div class="links"><button class="link" data-guide="${u.n}">${t.guide}</button><button class="link" data-album="${u.n}">${t.albumOf} · ${allPics(u).length}</button></div>
       </div>
     </article>`;
   }
+  const comics = UNITS.flatMap(u => ofKind(u, 'comic').map(p => Object.assign({ n: u.n }, p)));
   h += `</div>
+  <img class="divider" src="img/decor/facade.webp" alt="" width="700" height="234" loading="lazy">
+  <section class="comics">
+    <div class="section-head"><h2>${t.comics}</h2><p>${t.comicsSub} <button class="link" data-album="0">${t.album} · ${UNITS.reduce((s, u) => s + allPics(u).length, 0) + gal(0).length}</button></p></div>
+    <div class="comic-row">${comics.map(c => `<figure>${picBtn(c)}<figcaption>Урок ${c.n}</figcaption></figure>`).join('')}</div>
+  </section>
+  <img class="divider" src="img/decor/matryoshkas.webp" alt="" width="700" height="269" loading="lazy">
   <section class="heroes">
     <div class="section-head"><h2>${t.cast}</h2><p>${t.castSub}</p></div>
     <div class="cast">${HEROES.map(p => `
@@ -228,14 +245,16 @@ function renderHome() {
       </article>`).join('')}
     </div>
   </section>
+  <img class="divider small" src="img/decor/samovar.webp" alt="" width="700" height="280" loading="lazy">
   <section class="shelf">
     <div class="section-head"><h2>${t.shelf}</h2><p>${t.shelfSub}</p></div>
     <div class="books">${BOOKS.map(b => `<figure><button data-zoom="img/books/${b[0]}.webp" aria-label="${esc(b[1])}"><img src="img/books/${b[0]}.webp" alt="${esc(b[1])}" loading="lazy" width="255" height="382"></button><figcaption class="ru">${esc(b[1])}</figcaption></figure>`).join('')}</div>
     <p class="shelf-note">${t.shelfNote}</p>
   </section>
-  <img class="skyline" src="img/skyline.webp" alt="" loading="lazy" width="760" height="156">
+  <img class="skyline" src="img/decor/piter.webp" alt="" loading="lazy" width="700" height="234">
   <footer class="about">
-    <div>${t.about}<br><span class="ru" style="font-style:italic">«Я очень люблю преподавать и учиться».</span></div>
+    <img class="author" src="img/decor/author.webp" alt="Роберт Фадер" width="538" height="700" loading="lazy">
+    <div><p class="eyebrow">${t.authorCap}</p>${t.about}<br><span class="ru" style="font-style:italic">«Я очень люблю преподавать и учиться».</span></div>
     <div class="settings">
       <button class="link" data-act="unlock">${S.unlockAll ? t.lockAgain : t.unlockAll}</button>
       <button class="link" data-act="reset" style="color:var(--wine)">${t.reset}</button>
@@ -255,7 +274,8 @@ function openGuide(n) {
       <button class="x" data-close aria-label="×">×</button></header>
     <div class="inner">
       <section><h3>${t.tips}</h3><ul class="tips">${u.tips[L].map(x => `<li>${esc(x)}</li>`).join('')}</ul></section>
-      ${u.scenes ? `<section><h3>${t.plates}</h3><div class="plates">${sceneList(u).map(src => `<button data-zoom="${src}"><img src="${src}" alt="" loading="lazy"></button>`).join('')}</div></section>` : ''}
+      ${ofKind(u, 'chart').length ? `<section><h3>${t.charts}</h3><div class="plates">${ofKind(u, 'chart').map(p => picBtn(p)).join('')}</div></section>` : ''}
+      <section><h3>${t.plates}</h3><div class="masonry">${allPics(u).filter(p => p.kind !== 'chart').map(p => picBtn(p)).join('')}</div></section>
       <section><h3>${t.phrases}</h3><div class="phr">${u.phrases.map(p => `<div><span class="ru">${esc(p[0])}</span><button class="say" data-say="${esc(p[0])}" aria-label="▶">${ICON_SOUND}</button><small>${esc(p[PH_IX[L]])}</small></div>`).join('')}</div></section>
       <section><h3>${t.vocab}</h3><div class="table-wrap"><table><thead><tr><th>${t.word}</th><th>${t.meaning}</th></tr></thead><tbody>
         ${u.vocab.map(v => `<tr><td class="ru">${esc(v[0])} <small>${v[1]}</small><button class="say" data-say="${esc(v[0])}" aria-label="▶">${ICON_SOUND}</button></td><td>${esc(v[LANG_IX[L]])}</td></tr>`).join('')}
@@ -271,6 +291,17 @@ const zoomBox = document.createElement('div'); zoomBox.className = 'zoom'; zoomB
 function openZoom(src) { zoomBox.innerHTML = `<img src="${src}" alt=""><button class="x" aria-label="×">×</button>`; zoomBox.hidden = false; }
 function closeZoom() { zoomBox.hidden = true; zoomBox.innerHTML = ''; }
 zoomBox.addEventListener('click', closeZoom);
+function openAlbum(n) {
+  const t = T(), list = n ? [UNITS[n - 1]] : UNITS;
+  modal.innerHTML = `<div class="sheet wide" role="dialog" aria-modal="true" aria-labelledby="at">
+    <header><div><p class="eyebrow" style="color:var(--gold-2)">${n ? 'Урок ' + n : 'Резонанс'}</p><h2 id="at">${n ? t.albumOf : t.album}</h2></div>
+      <button class="x" data-close aria-label="×">×</button></header>
+    <div class="inner">${list.map(u => `<section>${n ? '' : `<h3 class="ru">Урок ${u.n} · ${esc(u.ru)}</h3>`}
+      <div class="masonry">${allPics(u).map(p => picBtn(p)).join('')}</div></section>`).join('')}
+      ${n ? '' : `<section><h3>${t.appendix}</h3><div class="masonry">${gal(0).map(p => picBtn(p)).join('')}</div></section>`}
+    </div></div>`;
+  modal.hidden = false; document.body.style.overflow = 'hidden'; $('.x', modal).focus();
+}
 function closeGuide() { modal.hidden = true; modal.innerHTML = ''; document.body.style.overflow = ''; }
 
 /* ======================= generación de ejercicios ======================= */
@@ -342,11 +373,12 @@ function startLesson(n, l) {
   if (!lessonOpen(n, l)) return;
   const items = buildLesson(n, l);
   items.unshift({ k: 'intro' });
-  LS = { n, l, items, i: 0, total: items.filter(x => x.k !== 'learn').length, right: 0, wrong: 0, retried: new Set(), answered: false, sel: null };
+  const un = UNITS[n - 1];
+  LS = { pics: shuffle(ofKind(un, 'scene', 'figure').slice(0)).filter(p => p.src !== un.img), mate: pickOne(ofKind(un, 'figure').length ? ofKind(un, 'figure') : figsAll()), n, l, items, i: 0, total: items.filter(x => x.k !== 'learn').length, right: 0, wrong: 0, retried: new Set(), answered: false, sel: null };
   box.hidden = false; document.body.style.overflow = 'hidden';
   box.innerHTML = `<div class="bar-top"><button class="close" data-act="quit" aria-label="×">×</button>
     <div class="track" aria-hidden="true"><span class="done"></span>${LOCO}</div></div>
-    <div class="stage"></div><div class="foot"><div class="in"><div class="msg"></div><button class="btn" data-act="primary"></button></div></div>`;
+    <div class="stage"></div>${LS.mate ? `<img class="mate" src="${LS.mate.src}" alt="">` : ''}<div class="foot"><div class="in"><div class="msg"></div><button class="btn" data-act="primary"></button></div></div>`;
   showItem();
 }
 function quitLesson() { LS = null; box.hidden = true; box.innerHTML = ''; document.body.style.overflow = ''; if ('speechSynthesis' in window) speechSynthesis.cancel(); render(); }
@@ -371,16 +403,19 @@ function showItem() {
   let h = '';
   switch (it.k) {
     case 'intro': {
-      const u = UNITS[LS.n - 1], sc = sceneList(u);
-      const src = LS.l <= 3 && sc.length ? sc[(LS.l - 1) % sc.length] : u.img;
+      const u = UNITS[LS.n - 1], scenes = ofKind(u, 'scene').slice(1), comic = ofKind(u, 'comic')[0], chart = ofKind(u, 'chart');
+      const p = LS.l === 3 && comic ? comic : LS.l === 4 && chart.length ? pickOne(chart) : (scenes[(LS.l - 1) % Math.max(1, scenes.length)] || allPics(u)[0]);
       st.innerHTML = `<div class="q intro"><p class="kind">${t.ticket} ${LS.l} · Урок ${u.n}</p>
         <h2>${t.lessons[LS.l - 1]}</h2><p class="ru intro-ru">${esc(u.ru)}</p>
-        <button class="intro-img" data-zoom="${src}" aria-label="${t.zoom}"><img src="${src}" alt=""></button></div>`;
+        ${p.kind === 'comic' ? `<p class="intro-note">${t.readComic}</p>` : ''}
+        <button class="intro-img ${p.kind}" data-zoom="${p.src}" aria-label="${t.zoom}"><img src="${p.src}" alt=""></button></div>`;
       foot('', '', t.board + ' →', true); return;
     }
     case 'learn': {
       const g = t.g[it.w[1]];
+      const lp = LS.pics[(LS.i) % LS.pics.length];
       h = `<p class="kind">${t.k.learn}</p>
+        ${lp ? `<div class="learn-pic ${lp.kind}"><img src="${lp.src}" alt=""></div>` : ''}
         <div class="learn"><button class="sound xl" data-say="${esc(it.w[0])}" aria-label="${t.tapHear}">${ICON_SOUND}</button>
         <div><div class="word">${esc(it.w[0])}<span class="g">${g[1]} ${g[0]}</span></div>
         <div class="mean">${esc(it.w[LANG_IX[L]])}</div><div class="hint">${t.tapHear}</div></div></div>`;
@@ -489,7 +524,7 @@ function finishLesson() {
   const acc = Math.round(LS.right / Math.max(1, LS.right + LS.wrong) * 100);
   const nx = nextLesson();
   $('.stage', box).innerHTML = `<div class="end">
-    <div class="postcard" style="background-image:url(${u.img});--fy:${u.fy || '0%'}"><div class="stamp">${t.stamp}<br>Урок ${u.n}<br>${'★'.repeat(LS.l)}</div></div>
+    <div class="postcard" style="background-image:url(${(pickOne(ofKind(u, 'scene').slice(1)) || { src: u.img }).src});--fy:20%"><div class="stamp">${t.stamp}<br>Урок ${u.n}<br>${'★'.repeat(LS.l)}</div></div>
     <h2>${t.endTitle}</h2><p style="margin:0;color:var(--muted)">${t.endText}</p>
     <div class="nums"><div><b>${acc}%</b><small>${t.correct}</small></div><div><b>+${LS.right + bonus}</b><small>${t.kmWon}</small></div></div>
   </div>`;
@@ -511,6 +546,7 @@ document.addEventListener('click', e => {
   if (el.dataset.say) { say(el.dataset.say); return; }
   if (el.dataset.zoom) return openZoom(el.dataset.zoom);
   if (el.dataset.guide) return openGuide(+el.dataset.guide);
+  if (el.dataset.album != null) { closeGuide(); return openAlbum(+el.dataset.album); }
   if (el.hasAttribute('data-close')) return closeGuide();
   if (el.dataset.go && !LS) { const [n, l] = el.dataset.go.split('-').map(Number); return startLesson(n, l); }
   if (el.dataset.act === 'unlock') { S.unlockAll = !S.unlockAll; save(); return render(); }
